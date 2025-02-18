@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="container">
       <NuxtLink to="/" class="navbar-brand">Booktopia</NuxtLink>
-      <UInput id="search-bar" color="white" variant="outline" placeholder="Search..." leading-icon="ic:baseline-search" />
+      <UInput id="search-bar" color="gray" variant="outline" placeholder="Search..." leading-icon="ic:baseline-search" />
       <ul class="navbar-nav">
         <li class="nav-item">
           <NuxtLink to="/my_books" class="nav-link">My Books</NuxtLink>
@@ -13,11 +13,43 @@
       </ul>
     </div>
   </nav>
+  <div>
+    <div v-if="loading">Loading books...</div>
+    <div v-else-if="error">Error loading books: {{ error }}</div>
+    <div v-else>
+      <div v-if="books.length > 0">
+        <UCard v-for="book in books" :key="book.id" class="book-card">
+          <img :src="book.coverImage" :alt="book.title" class="cover-image" />
+          <div class="book-card-body">
+            <h3 class="text-3xl font-bold underline">Titel: {{ book.title }}</h3>
+          </div>
+        </UCard>
+      </div>
+      <div v-else>No books found.</div>
+    </div>
+  </div>
 </template>
 
-<script>
+
+
+<script lang="ts">
+
+import mockBooks from '@/mockdata/book_mocks'
+import { IInput } from '@inspira-ui/plugins';
+import { cn } from "@/lib/utils";
+
+const mock_books = mockBooks
+
 export default {
-  name: 'Navbar' // Optional, but good practice for component identification
+  name: 'Navbar',
+  data() {
+    return {
+      loading: false,
+      error: null,
+      books: mock_books,
+    };
+  }
+
 }
 </script>
 
@@ -64,7 +96,7 @@ export default {
 
 .nav-link:hover {
   background-color: #6d8f6d;
-  color: #ACABA2;
+  color: #3a3a36;
 }
 
 /* Add active class styling if needed (see explanation below) */
@@ -73,6 +105,18 @@ export default {
   color: white;
 }
 
+.book-card {
+  display: flex;
+  padding: 0 1rem;
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 10px;
+}
+
+.cover-image {
+  display: block;
+  width: 100px;
+}
 
 #search-bar {
   background-color: white;
