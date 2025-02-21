@@ -2,7 +2,6 @@
   <nav class="navbar">
     <div class="container">
       <NuxtLink to="/" class="navbar-brand">Booktopia</NuxtLink>
-      <UInput id="search-bar" color="gray" variant="outline" placeholder="Search..." leading-icon="ic:baseline-search" />
       <ul class="navbar-nav">
         <li class="nav-item">
           <NuxtLink to="/my_books" class="nav-link">My Books</NuxtLink>
@@ -19,6 +18,16 @@
 
 
 <script lang="ts">
+
+import {defineComponent} from "vue";
+import IInput from "~/components/IInput.vue";
+
+export default defineComponent({
+  components: {IInput}
+})
+
+const search = null;
+
 
 </script>
 

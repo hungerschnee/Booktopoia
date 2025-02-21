@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import mockBooks from '@/mockdata/book_mocks'
-import { cn } from "@/lib/utils";
 
 const books = mockBooks
 
@@ -11,11 +10,21 @@ const books = mockBooks
 
 <template>
   <div>
-    <div v-if="books.length" class="card">
+    <div class="mt-3 flex  justify-center">
+      <IInput
+          id="search-bar"
+          placeholder="Search..."
+          container-class="w-full max-w-sm"
+      >
+      </IInput>
+    </div>
+    <div v-if="books.length" class="w-full">
       <UCard v-for="book in books" :key="book.id" class="px-4 mx-9 my-4">
         <div class="flex">
-          <div class="w-fit max-w-28 ">
-            <img :src="book.coverImage" :alt="book.title"/>
+          <div class="w-fit">
+            <Book size="sm" shadow="sm" radius="lg">
+              <img class="absolute top-0 left-5 max-w-full max-h-full" :src="book.coverImage" :alt="book.title"/>
+            </Book>
           </div>
           <div class="book-card-body grow px-6 flex flex-col justify-between">
             <div>
@@ -40,15 +49,5 @@ const books = mockBooks
 </template>
 
 <style scoped>
-
-.card {
-  width: 100%;
-}
-
-.book-card {
-  padding: 0 1rem;
-  margin: 10px 40px;
-}
-
 
 </style>
