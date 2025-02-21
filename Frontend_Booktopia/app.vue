@@ -13,44 +13,13 @@
       </ul>
     </div>
   </nav>
-  <div>
-    <div v-if="loading">Loading books...</div>
-    <div v-else-if="error">Error loading books: {{ error }}</div>
-    <div v-else>
-      <div v-if="books.length > 0">
-        <UCard v-for="book in books" :key="book.id" class="book-card">
-          <img :src="book.coverImage" :alt="book.title" class="cover-image" />
-          <div class="book-card-body">
-            <h3 class="text-3xl font-bold underline">Titel: {{ book.title }}</h3>
-          </div>
-        </UCard>
-      </div>
-      <div v-else>No books found.</div>
-    </div>
-  </div>
+  <NuxtPage/>
 </template>
 
 
 
 <script lang="ts">
 
-import mockBooks from '@/mockdata/book_mocks'
-import { IInput } from '@inspira-ui/plugins';
-import { cn } from "@/lib/utils";
-
-const mock_books = mockBooks
-
-export default {
-  name: 'Navbar',
-  data() {
-    return {
-      loading: false,
-      error: null,
-      books: mock_books,
-    };
-  }
-
-}
 </script>
 
 <style scoped>
@@ -105,33 +74,14 @@ export default {
   color: white;
 }
 
-.book-card {
-  display: flex;
-  padding: 0 1rem;
-  margin-left: 40px;
-  margin-right: 40px;
-  margin-top: 10px;
-}
-
-.cover-image {
-  display: block;
-  width: 100px;
-}
-
 #search-bar {
   background-color: white;
-/*
-#0E131F for background
-#9E9589 For Icon
-#555454 For Font
-TODO: Design ändern
-*/
+  /*
+  #0E131F for background
+  #9E9589 For Icon
+  #555454 For Font
+  TODO: Design ändern
+  */
 }
-
-
-template {
-  background-color: #181A1B;
-}
-
 
 </style>
