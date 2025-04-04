@@ -1,18 +1,23 @@
 <template>
-  <nav class="navbar">
-    <div class="container">
-      <NuxtLink to="/" class="navbar-brand">Booktopia</NuxtLink>
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <NuxtLink to="/my_books" class="nav-link">My Books</NuxtLink>
-        </li>
-        <li class="nav-item">
-          <NuxtLink to="/about" class="nav-link">About</NuxtLink>
-        </li>
-      </ul>
-    </div>
-  </nav>
-  <NuxtPage/>
+  <UApp>
+    <nav class="navbar">
+      <div class="container">
+        <NuxtLink to="/" class="navbar-brand">Booktopia</NuxtLink>
+        <ul class="navbar-nav">
+          <li class="nav-item mt-3">
+            <NuxtLink to="/my_books" class="nav-link">My Books</NuxtLink>
+          </li>
+          <li class="nav-item mt-3">
+            <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+          </li>
+          <li class="nav-item">
+            <toggle-button/>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <NuxtPage/>
+  </UApp>
 </template>
 
 
@@ -63,6 +68,7 @@ const search = null;
 
 .nav-item {
   margin-left: 1.5rem; /* Spacing between nav items */
+  align-items: center;
 }
 
 .nav-link {

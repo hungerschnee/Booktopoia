@@ -1,28 +1,4 @@
-interface Book {
-    id: string; // Unique identifier for the book
-    title: string;
-    author: string;
-    releaseDate: string; // ISO 8601 format (YYYY-MM-DD) for consistency
-    genre: string[]; // Array of genres for flexibility
-    coverImage: string; // URL to the book cover image
-    description: string; // Short description or blurb
-    pages: number;
-    isbn: string; // International Standard Book Number
-    publisher?: string; // Optional publisher
-    language: string;
-    format: 'hardcover' | 'paperback' | 'ebook' | 'audiobook';
-    price: number; // Price in your preferred currency
-    rating: number; // Average rating (e.g., out of 5)
-    reviews?: BookReview[]; // Optional array of reviews
-    // Add any other properties you need
-}
-
-interface BookReview {
-    user: string; // Username or ID of the reviewer
-    rating: number; // Rating given by the reviewer
-    comment: string; // Review text
-    date: string; // Date of the review (ISO 8601)
-}
+import type {Book} from '~/types/book'
 
 const mockBooks: Book[] = [
     {
@@ -31,7 +7,7 @@ const mockBooks: Book[] = [
         author: 'Douglas Adams',
         releaseDate: '1979-10-12',
         genre: ['Science Fiction', 'Comedy'],
-        coverImage: 'https://m.media-amazon.com/images/I/71Mt00Ge1XL._AC_UF894,1000_QL80_.jpg', // Replace with actual URL
+        coverImage: 'https://m.media-amazon.com/images/I/71Mt00Ge1XL._AC_UF894,1000_QL80_.jpg',
         description: 'A comedic science fiction series.',
         pages: 224,
         isbn: '978-0345391803',
@@ -51,7 +27,7 @@ const mockBooks: Book[] = [
         author: 'Jane Austen',
         releaseDate: '1813-01-28',
         genre: ['Romance', 'Classic'],
-        coverImage: 'https://m.media-amazon.com/images/I/712P0p5cXIL._AC_UF894,1000_QL80_.jpg', // Replace with actual URL
+        coverImage: 'https://m.media-amazon.com/images/I/712P0p5cXIL._AC_UF894,1000_QL80_.jpg',
         description: 'A novel of manners.',
         pages: 432,
         isbn: '978-0141439518',
@@ -67,7 +43,7 @@ const mockBooks: Book[] = [
         author: 'Frank Herbert',
         releaseDate: '1965-08-01',
         genre: ['Science Fiction', 'Fantasy'],
-        coverImage: 'https://m.media-amazon.com/images/I/81TmnPZWb0L._AC_UF894,1000_QL80_.jpg', // Replace with actual URL
+        coverImage: 'https://m.media-amazon.com/images/I/81TmnPZWb0L._AC_UF894,1000_QL80_.jpg',
         description: 'A science fiction epic.',
         pages: 688,
         isbn: '978-0441013593',
@@ -110,6 +86,22 @@ const mockBooks: Book[] = [
         price: 11.99,
         rating: 4.6,
     },
+    {
+        id: '6',
+        title: 'Dune',
+        author: 'Frank Herbert',
+        releaseDate: '1965-08-01',
+        genre: ['Science Fiction', 'Fantasy'],
+        coverImage: 'https://m.media-amazon.com/images/I/81TmnPZWb0L._AC_UF894,1000_QL80_.jpg',
+        description: 'A science fiction epic.',
+        pages: 688,
+        isbn: '978-0441013593',
+        publisher: 'Ace Books',
+        language: 'English',
+        format: 'hardcover',
+        price: 14.99,
+        rating: 4.7,
+    },
 ];
 
-export default mockBooks; // Export for use in your Nuxt components
+export default mockBooks;
