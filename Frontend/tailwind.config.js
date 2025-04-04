@@ -15,6 +15,7 @@ module.exports = {
     extend: {
       colors: {
         'booktopia-green': '#364332',
+        'booktopia-green-hover': '#3f4f3b',
         'booktopia-font': '#ACABA2',
       },
     },

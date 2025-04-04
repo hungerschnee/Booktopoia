@@ -12,7 +12,6 @@
   "dependencies": {
     "@nuxt/eslint": "^1.0.1",
     "@nuxt/image": "^1.9.0",
-    "@nuxt/ui": "^2.21.0",
     "@vueuse/core": "^12.7.0",
     "@vueuse/integrations": "^12.7.0",
     "@vueuse/nuxt": "^12.7.0",
@@ -28,13 +27,14 @@
     "@iconify/json": "^2.2.309",
     "@iconify/utils": "^2.3.0",
     "@inspira-ui/plugins": "^0.0.1",
+    "@nuxt/ui": "^3.0.2",
     "@nuxtjs/tailwindcss": "^6.13.1",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "postcss": "^8.5.2",
+    "postcss": "^8.5.3",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.7.3"
   }
