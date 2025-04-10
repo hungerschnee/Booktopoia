@@ -5,9 +5,6 @@ import { useState } from '#app';
 import {computed} from "vue";
 import type { UserStatus } from "~/mockdata/users";
 import type {AggregatedBook} from "~/types/book";
-
-
-const books = mockBooks;
 const authorization = useState<UserStatus>('user-status');
 
 
@@ -45,8 +42,7 @@ const uniqueBooksWithCount = computed(() => {
           id="search-bar"
           placeholder="Search..."
           container-class="w-full max-w-sm"
-      >
-      </IInput>
+      />
     </div>
     <div v-if="uniqueBooksWithCount.length" class="w-full">
       <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4">

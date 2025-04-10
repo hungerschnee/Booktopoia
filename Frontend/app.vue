@@ -1,5 +1,4 @@
 <template>
-  <UApp>
     <nav class="navbar">
       <div class="container">
         <NuxtLink to="/" class="navbar-brand">Booktopia</NuxtLink>
@@ -17,7 +16,6 @@
       </div>
     </nav>
     <NuxtPage/>
-  </UApp>
 </template>
 
 
@@ -81,22 +79,6 @@ const search = null;
 .nav-link:hover {
   background-color: #6d8f6d;
   color: #3a3a36;
-}
-
-/* Add active class styling if needed (see explanation below) */
-.nav-link.nuxt-link-exact-active {
-  background-color: #007bff; /* Example active link color */
-  color: white;
-}
-
-#search-bar {
-  background-color: white;
-  /*
-  #0E131F for background
-  #9E9589 For Icon
-  #555454 For Font
-  TODO: Design ändern
-  */
 }
 
 </style>

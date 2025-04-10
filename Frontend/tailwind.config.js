@@ -2,7 +2,10 @@ import animate from "tailwindcss-animate";
 import { setupInspiraUI } from "@inspira-ui/plugins";
 
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
+  darkMode: "selector",
+  safelist: ["dark"],
+  prefix: "",
   content: [
     "./components/**/*.{js,vue,ts}",
     "./layouts/**/*.vue",
@@ -17,20 +20,6 @@ module.exports = {
         'booktopia-green': '#364332',
         'booktopia-green-hover': '#3f4f3b',
         'booktopia-font': '#ACABA2',
-      },
-    },
-  },
-  plugins: [],
-}
-
-export default {
-  darkMode: "selector",
-  safelist: ["dark"],
-  prefix: "",
-  content: [],
-  theme: {
-    extend: {
-      colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -74,5 +63,8 @@ export default {
     },
   },
 
-  plugins: [animate, setupInspiraUI],
+  plugins: [
+      animate,
+      setupInspiraUI,
+  ],
 };
