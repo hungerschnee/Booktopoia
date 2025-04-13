@@ -2,10 +2,15 @@
 
 import mockBooks from '@/mockdata/book_mocks'
 import { useState } from '#app';
-import {computed} from "vue";
+import { ref, computed } from "vue";
 import type { UserStatus } from "~/mockdata/users";
-import type {AggregatedBook} from "~/types/book";
+import type { AggregatedBook } from "~/types/book";
+import AddBookModal from '~/components/AddBookModal.vue';
+
+// State for modal visibility
+const isModalOpen = ref(false);
 const authorization = useState<UserStatus>('user-status');
+
 
 
 const uniqueBooksWithCount = computed(() => {
@@ -33,6 +38,23 @@ const uniqueBooksWithCount = computed(() => {
   return Object.values(booksByIsbn);
 });
 
+function openModal() {
+  isModalOpen.value = true;
+}
+
+// Function to close the modal
+function closeModal() {
+  isModalOpen.value = false;
+}
+
+// Function to handle the 'book-added' event from the modal
+function handleBookAdded(newBook) {
+  console.log('New book received:', newBook);
+  mockBooks.push(newBook); // Add the new book to our local list
+  closeModal(); // Close the modal after adding
+  // Here you would typically send the newBook data to your backend API
+}
+
 </script>
 
 <template>
@@ -51,21 +73,27 @@ const uniqueBooksWithCount = computed(() => {
             class="u-buttons dark:bg-booktopia-green dark:text-booktopia-font outline-none"
             size="xl"
             variant="ghost"
-            @click=""
+            @click="openModal"
         >
           Add Book
         </UButton>
-        <div v-else class="w-[102px] h-[44px]"></div>
+        <div v-else class="w-[102px] h-[44px]"/>
       </div>
     </div>
 
+    <AddBookModal
+        v-if="isModalOpen"
+        @close="closeModal"
+        @book-added="handleBookAdded"
+    />
+
     <div v-if="uniqueBooksWithCount.length" class="w-full">
-      <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4">
+      <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4 dark:bg-gray-900">
         <div class="flex">
           <div class="w-fit">
-            <Book size="sm" shadow="sm" radius="lg">
+            <BookComponent size="sm" shadow="sm" radius="lg">
               <img class="absolute top-0 left-5 max-w-full max-h-full" :src="item.book.coverImage" :alt="item.book.title"/>
-            </Book>
+            </BookComponent>
           </div>
           <div class="book-card-body grow px-6 flex flex-col justify-between">
             <div>
@@ -87,8 +115,8 @@ const uniqueBooksWithCount = computed(() => {
               <p v-if="item.count > 1">{{ item.count }} Copies Available</p>
               <p v-if="item.count == 1">{{ item.count }} Copy Available</p>
             </div>
-            <UButton v-if="authorization === 'customer' || authorization === 'librarian' ">Borrow Book</UButton>
-            <UButton v-if="authorization === 'librarian'">Delete Book</UButton>
+            <UButton class="text-center" v-if="authorization === 'customer' || authorization === 'librarian' ">Borrow Book</UButton>
+            <UButton class="text-center" v-if="authorization === 'librarian'">Delete Book</UButton>
           </div>
         </div>
       </UCard>

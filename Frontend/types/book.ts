@@ -12,7 +12,7 @@ export interface Book {
     language: string;
     format: 'hardcover' | 'paperback' | 'ebook' | 'audiobook';
     price: number; // Price in your preferred currency
-    rating: number; // Average rating (e.g., out of 5)
+    rating?: number; // Average rating (e.g., out of 5)
     reviews?: BookReview[]; // Optional array of reviews
 }
 
