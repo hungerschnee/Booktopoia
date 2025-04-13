@@ -1,9 +1,9 @@
 <template>
   <div>
     <UButton
-        class="dark:bg-booktopia-green dark:text-booktopia-font outline-none hover:dark:divide-booktopia-green-hover"
-        @click="toggleStatus"
+        class="dark:bg-booktopia-green dark:text-booktopia-font outline-none hover:dark:bg-booktopia-green-hover-light hover:dark:text-booktopia-green-hover"
         variant="ghost"
+        @click="toggleStatus"
     >
       {{ buttonText }}
     </UButton>
@@ -11,10 +11,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useState } from '#app';
 import type { UserStatus } from "~/mockdata/users";
-
 
 // Define the possible statuses
 // type UserStatus = 'customer' | 'librarian';
@@ -70,7 +69,8 @@ button {
   margin-top: 5px;
 }
 button:hover {
-  background-color: #e0e0e0;
+  background-color: #6d8f6d;
+  color: #3a3a36;
 }
 p {
   margin-bottom: 10px;

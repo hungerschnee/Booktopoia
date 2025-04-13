@@ -1,3 +1,7 @@
+<script setup lang="ts">
+
+</script>
+
 <template>
     <nav class="navbar">
       <div class="container">
@@ -18,21 +22,6 @@
     <NuxtPage/>
 </template>
 
-
-
-<script lang="ts">
-
-import {defineComponent} from "vue";
-import IInput from "~/components/IInput.vue";
-
-export default defineComponent({
-  components: {IInput}
-})
-
-const search = null;
-
-
-</script>
 
 <style scoped>
 /* Basic Navbar Styling - Customize as needed */
@@ -79,6 +68,15 @@ const search = null;
 .nav-link:hover {
   background-color: #6d8f6d;
   color: #3a3a36;
+}
+
+button {
+  padding: 8px 15px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  margin-top: 5px;
 }
 
 </style>

@@ -20,6 +20,8 @@ export default {
         'booktopia-green': '#364332',
         'booktopia-green-hover': '#3f4f3b',
         'booktopia-font': '#ACABA2',
+        'booktopia-font-hover': '#3a3a36',
+        'booktopia-green-hover-light': '#6d8f6d',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -37,13 +37,28 @@ const uniqueBooksWithCount = computed(() => {
 
 <template>
   <div>
-    <div class="mt-3 flex  justify-center">
-      <IInput
-          id="search-bar"
-          placeholder="Search..."
-          container-class="w-full max-w-sm"
-      />
+    <div class="mt-3 flex items-center">
+      <div class="flex-grow max-w-sm mx-auto">
+        <IInput
+            id="search-bar"
+            placeholder="Search..."
+            container-class="w-full"
+        />
+      </div>
+      <div class="mr-9">
+        <UButton
+            v-if="authorization === 'librarian'"
+            class="u-buttons dark:bg-booktopia-green dark:text-booktopia-font outline-none"
+            size="xl"
+            variant="ghost"
+            @click=""
+        >
+          Add Book
+        </UButton>
+        <div v-else class="w-[102px] h-[44px]"></div>
+      </div>
     </div>
+
     <div v-if="uniqueBooksWithCount.length" class="w-full">
       <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4">
         <div class="flex">
@@ -83,5 +98,11 @@ const uniqueBooksWithCount = computed(() => {
 </template>
 
 <style scoped>
+
+.u-buttons:hover {
+  background-color: #6d8f6d;
+  color: #3a3a36;
+}
+
 
 </style>
