@@ -40,7 +40,7 @@
           <p v-if="book.publisher"><strong class="font-semibold text-gray-900 dark:text-green-500">Publisher:</strong> {{ book.publisher }}</p>
           <p><strong class="font-semibold text-gray-900 dark:text-green-500">Language:</strong> {{ book.language }}</p>
           <p><strong class="font-semibold text-gray-900 dark:text-green-500">Format:</strong> <span class="capitalize">{{ book.format }}</span></p>
-          <p><strong class="font-semibold text-gray-900 dark:text-green-500">Price:</strong> {{ book.price.toFixed(2) }}€</p> <p v-if="book.rating !== undefined"><strong class="font-semibold text-gray-900 dark:text-green-500">Rating:</strong> {{ book.rating }} / 5</p>
+          <p v-if="book.rating !== undefined"><strong class="font-semibold text-gray-900 dark:text-green-500">Rating:</strong> {{ book.rating }} / 5</p>
         </div>
       </div>
 

@@ -11,7 +11,6 @@ export interface Book {
     publisher?: string; // Optional publisher
     language: string;
     format: 'hardcover' | 'paperback' | 'ebook' | 'audiobook';
-    price: number; // Price in your preferred currency
     rating?: number; // Average rating (e.g., out of 5)
     reviews?: BookReview[]; // Optional array of reviews
 }

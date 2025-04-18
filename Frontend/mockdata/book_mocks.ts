@@ -14,7 +14,6 @@ const mockBooks: Book[] = [
         publisher: 'Del Rey',
         language: 'English',
         format: 'paperback',
-        price: 9.99,
         rating: 4.5,
         reviews: [
             { user: 'user1', rating: 5, comment: 'A classic!', date: '2023-10-26' },
@@ -34,7 +33,6 @@ const mockBooks: Book[] = [
         publisher: 'Penguin Classics',
         language: 'English',
         format: 'paperback',
-        price: 7.99,
         rating: 4.2,
     },
     {
@@ -50,7 +48,6 @@ const mockBooks: Book[] = [
         publisher: 'Ace Books',
         language: 'English',
         format: 'hardcover',
-        price: 14.99,
         rating: 4.7,
     },
     // Add more mock book data as needed...
@@ -67,7 +64,6 @@ const mockBooks: Book[] = [
         publisher: 'Celadon Books',
         language: 'English',
         format: 'hardcover',
-        price: 12.99,
         rating: 4.0,
     },
     {
@@ -83,7 +79,6 @@ const mockBooks: Book[] = [
         publisher: 'Harper',
         language: 'English',
         format: 'paperback',
-        price: 11.99,
         rating: 4.6,
     },
     {
@@ -99,7 +94,6 @@ const mockBooks: Book[] = [
         publisher: 'Ace Books',
         language: 'English',
         format: 'hardcover',
-        price: 14.99,
         rating: 4.7,
     },
 ];
