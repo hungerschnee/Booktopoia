@@ -14,20 +14,18 @@ const authorization = useState<UserStatus>('user-status');
 const isDetailsModalOpen = ref(false);
 const selectedBook = ref<Book | null>(null);
 const searchQuery = ref('');
+const allBooks = useState<Book[]>('all-books', () => initialMockBooks);
 
-// 2. Create a reactive ref holding the book data
-const allBooks = ref<Book[]>(initialMockBooks);
+// *** Access/Initialize the shared state for borrowed books ***
+// Uses 'borrowed-books' as a unique key. If it doesn't exist, initializes with an empty array.
+const borrowedBooks = useState<Book[]>('borrowed-books', () => []);
 
 // --- Computed Properties ---
-
-// 3. Update filteredBooks to use the reactive 'allBooks.value'
-const filteredBooks = computed(() => {
+const filteredBooks = computed(() => { 
   const query = searchQuery.value.toLowerCase().trim();
   if (!query) {
-    return allBooks.value; // Access the array via .value
+    return allBooks.value;
   }
-
-  // Access the array via .value for filtering
   return allBooks.value.filter(book => {
     const isbnMatch = book.isbn?.toLowerCase().includes(query);
     const titleMatch = book.title?.toLowerCase().includes(query);
@@ -37,10 +35,9 @@ const filteredBooks = computed(() => {
   });
 });
 
-// uniqueBooksWithCount depends on filteredBooks, no change needed here
-const uniqueBooksWithCount = computed(() => {
+const uniqueBooksWithCount = computed(() => { 
   const booksByIsbn: Record<string, AggregatedBook> = {};
-  for (const book of filteredBooks.value) { // implicitly uses the updated filteredBooks
+  for (const book of filteredBooks.value) {
     if (!book.isbn) {
       console.warn(`Book with id ${book.id} ('${book.title}') is missing an ISBN and will be skipped.`);
       continue;
@@ -49,7 +46,7 @@ const uniqueBooksWithCount = computed(() => {
       booksByIsbn[book.isbn].count++;
     } else {
       booksByIsbn[book.isbn] = {
-        book: book,
+        book: book, // Use the first encountered book instance for details
         count: 1,
       };
     }
@@ -66,18 +63,41 @@ function closeAddModal() {
   isAddModalOpen.value = false;
 }
 
-// 4. Update handleBookAdded to modify the reactive 'allBooks.value'
 function handleBookAdded(newBook: Book) {
   console.log('New book received:', newBook);
-  // Push the new book into the reactive ref's array
   allBooks.value.push(newBook);
-  // Vue detects this change, computed properties update, list re-renders
-  closeAddModal(); // Close modal after adding
+  closeAddModal();
 }
 
 function openDetailsModal(book: Book) {
   selectedBook.value = book;
   isDetailsModalOpen.value = true;
+}
+
+// *** Method to handle borrowing a book ***
+function borrowBook(isbn: string) {
+  console.log(`Attempting to borrow book with ISBN: ${isbn}`);
+
+  // Find the index of the *first available* book instance matching the ISBN
+  const bookIndex = allBooks.value.findIndex(book => book.isbn === isbn);
+
+  if (bookIndex !== -1) {
+    // Remove the book instance from the available list using splice.
+    // splice returns an array of removed items, we take the first one.
+    const borrowedBookInstance = allBooks.value.splice(bookIndex, 1)[0];
+
+    // Add the specific book instance to the shared borrowed list
+    borrowedBooks.value.push(borrowedBookInstance);
+
+    console.log(`Book "${borrowedBookInstance.title}" (ID: ${borrowedBookInstance.id}) borrowed successfully.`);
+
+    // The 'uniqueBooksWithCount' computed property will update automatically
+    // because 'allBooks' (which 'filteredBooks' depends on) has changed.
+  } else {
+    // This might happen if counts are somehow out of sync, good to log.
+    console.error(`Error: Could not find an available instance for ISBN ${isbn} to borrow.`);
+    // Optionally, show a user-facing error message here.
+  }
 }
 
 </script>
@@ -110,7 +130,8 @@ function openDetailsModal(book: Book) {
     <AddBookModal
         v-if="isAddModalOpen"
         @close="closeAddModal"
-        @book-added="handleBookAdded" />
+        @book-added="handleBookAdded"
+    />
 
     <div v-if="uniqueBooksWithCount.length" class="w-full">
       <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4 dark:bg-gray-900">
@@ -145,10 +166,23 @@ function openDetailsModal(book: Book) {
             <div class="text-sm text-gray-500 dark:text-gray-400">
               <p v-if="item.count > 1">{{ item.count }} Copies Available</p>
               <p v-if="item.count == 1">{{ item.count }} Copy Available</p>
+              <p v-if="item.count <= 0" class="text-red-500">Unavailable</p>
             </div>
-            <UButton class="text-center" v-if="authorization === 'customer' || authorization === 'librarian' ">Borrow Book</UButton>
-            <UButton class="text-center" v-if="authorization === 'librarian'">Delete Book</UButton>
-          </div>
+            <UButton
+                class="text-center"
+                v-if="(authorization === 'customer' || authorization === 'librarian') && item.count > 0"
+                @click="borrowBook(item.book.isbn)"
+            >
+              Borrow Book
+            </UButton>
+            <UButton
+                class="text-center"
+                v-if="(authorization === 'customer' || authorization === 'librarian') && item.count <= 0"
+                disabled
+            >
+              Borrow Book
+            </UButton>
+            <UButton class="text-center" v-if="authorization === 'librarian'">Delete Book</UButton> </div>
         </div>
       </UCard>
     </div>
@@ -165,7 +199,7 @@ function openDetailsModal(book: Book) {
 </template>
 
 <style scoped>
-/* Styles remain the same */
+
 .u-buttons:hover {
   background-color: #6d8f6d;
   color: #3a3a36;
