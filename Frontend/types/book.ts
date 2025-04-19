@@ -22,6 +22,12 @@ export interface BookReview {
     date: string; // Date of the review
 }
 
+export interface BorrowedBookEntry {
+    book: Book;
+    borrowedDate: string; // ISO Date string when the book was borrowed
+    returnUntil: string;  // ISO Date string when the book is due
+}
+
 export interface AggregatedBook {
     book: Book; // Use the details of the first book found with this ISBN
     count: number; // How many books share this ISBN

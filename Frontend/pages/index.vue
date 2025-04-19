@@ -4,9 +4,10 @@ import initialMockBooks from '@/mockdata/book_mocks'
 import { useState } from '#app';
 import { ref, computed } from "vue";
 import type { UserStatus } from "~/mockdata/users";
-import type { AggregatedBook, Book } from "~/types/book";
+import type { AggregatedBook, BorrowedBookEntry, Book } from "~/types/book";
 import AddBookModal from '~/components/AddBookModal.vue';
 import BookDetailsModal from '~/components/BookDetailsModal.vue';
+import { useToast} from "#ui/composables/useToast";
 
 // --- State ---
 const isAddModalOpen = ref(false);
@@ -15,10 +16,8 @@ const isDetailsModalOpen = ref(false);
 const selectedBook = ref<Book | null>(null);
 const searchQuery = ref('');
 const allBooks = useState<Book[]>('all-books', () => initialMockBooks);
-
-// *** Access/Initialize the shared state for borrowed books ***
-// Uses 'borrowed-books' as a unique key. If it doesn't exist, initializes with an empty array.
-const borrowedBooks = useState<Book[]>('borrowed-books', () => []);
+const borrowedBooks = useState<BorrowedBookEntry[]>('borrowed-books', () => []);
+const toast = useToast();
 
 // --- Computed Properties ---
 const filteredBooks = computed(() => { 
@@ -74,29 +73,61 @@ function openDetailsModal(book: Book) {
   isDetailsModalOpen.value = true;
 }
 
-// *** Method to handle borrowing a book ***
+function addWeeks(date: Date, weeks: number): Date {
+  const newDate = new Date(date);
+  // setDate handles month/year rollovers automatically
+  newDate.setDate(newDate.getDate() + weeks * 7);
+  return newDate;
+}
+
+// Updated borrowBook method
 function borrowBook(isbn: string) {
   console.log(`Attempting to borrow book with ISBN: ${isbn}`);
-
-  // Find the index of the *first available* book instance matching the ISBN
   const bookIndex = allBooks.value.findIndex(book => book.isbn === isbn);
 
   if (bookIndex !== -1) {
-    // Remove the book instance from the available list using splice.
-    // splice returns an array of removed items, we take the first one.
     const borrowedBookInstance = allBooks.value.splice(bookIndex, 1)[0];
 
-    // Add the specific book instance to the shared borrowed list
-    borrowedBooks.value.push(borrowedBookInstance);
+    const now = new Date();
+    const borrowedDateISO = now.toISOString();
+    const returnUntilDate = addWeeks(now, 2);
+    const returnUntilISO = returnUntilDate.toISOString();
 
-    console.log(`Book "${borrowedBookInstance.title}" (ID: ${borrowedBookInstance.id}) borrowed successfully.`);
+    const newEntry: BorrowedBookEntry = {
+      book: borrowedBookInstance,
+      borrowedDate: borrowedDateISO,
+      returnUntil: returnUntilISO,
+    };
 
-    // The 'uniqueBooksWithCount' computed property will update automatically
-    // because 'allBooks' (which 'filteredBooks' depends on) has changed.
+    borrowedBooks.value.push(newEntry);
+
+    // Get formatted date (using German locale based on your location)
+    const formattedDueDate = returnUntilDate.toLocaleDateString('de-DE');
+
+    // Existing console log
+    console.log(`Book "${borrowedBookInstance.title}" (ID: ${borrowedBookInstance.id}) borrowed successfully. Due: ${formattedDueDate}`);
+
+    // *** 3. Add toast notification for success ***
+    toast.add({
+      id: `borrow-success-${borrowedBookInstance.id}`, // Optional unique ID
+      title: "Book Borrowed!",
+      description: `You borrowed "${borrowedBookInstance.title}". Please return by ${formattedDueDate}.`,
+      icon: 'i-heroicons-book-open-20-solid',
+      color: 'green',
+      timeout: 5000 // 5 seconds duration
+    });
+
   } else {
-    // This might happen if counts are somehow out of sync, good to log.
     console.error(`Error: Could not find an available instance for ISBN ${isbn} to borrow.`);
-    // Optionally, show a user-facing error message here.
+    // *** Optional: Add toast notification for error ***
+    toast.add({
+      id: `borrow-error-${isbn}`,
+      title: 'Borrowing Failed',
+      description: `Sorry, no available copy was found for "${isbn}".`,
+      icon: 'i-heroicons-x-circle-20-solid',
+      color: 'red',
+      timeout: 5000
+    });
   }
 }
 

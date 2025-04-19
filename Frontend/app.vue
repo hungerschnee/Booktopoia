@@ -20,6 +20,7 @@
       </div>
     </nav>
     <NuxtPage/>
+  <UNotifications/>
 </template>
 
 
