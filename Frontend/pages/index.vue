@@ -1,31 +1,50 @@
 // index.vue
 <script setup lang="ts">
-import mockBooks from '@/mockdata/book_mocks'
+import initialMockBooks from '@/mockdata/book_mocks'
 import { useState } from '#app';
 import { ref, computed } from "vue";
 import type { UserStatus } from "~/mockdata/users";
 import type { AggregatedBook, Book } from "~/types/book";
 import AddBookModal from '~/components/AddBookModal.vue';
-import BookDetailsModal from '~/components/BookDetailsModal.vue'; // <-- Import the new component
+import BookDetailsModal from '~/components/BookDetailsModal.vue';
 
-// State for Add Book modal visibility
+// --- State ---
 const isAddModalOpen = ref(false);
 const authorization = useState<UserStatus>('user-status');
-
-// State for Details Modal
 const isDetailsModalOpen = ref(false);
 const selectedBook = ref<Book | null>(null);
+const searchQuery = ref('');
 
+// 2. Create a reactive ref holding the book data
+const allBooks = ref<Book[]>(initialMockBooks);
+
+// --- Computed Properties ---
+
+// 3. Update filteredBooks to use the reactive 'allBooks.value'
+const filteredBooks = computed(() => {
+  const query = searchQuery.value.toLowerCase().trim();
+  if (!query) {
+    return allBooks.value; // Access the array via .value
+  }
+
+  // Access the array via .value for filtering
+  return allBooks.value.filter(book => {
+    const isbnMatch = book.isbn?.toLowerCase().includes(query);
+    const titleMatch = book.title?.toLowerCase().includes(query);
+    const authorMatch = book.author?.toLowerCase().includes(query);
+    const genreMatch = book.genre?.some(g => g.toLowerCase().includes(query));
+    return isbnMatch || titleMatch || authorMatch || genreMatch;
+  });
+});
+
+// uniqueBooksWithCount depends on filteredBooks, no change needed here
 const uniqueBooksWithCount = computed(() => {
-  // ... (computed property remains the same)
   const booksByIsbn: Record<string, AggregatedBook> = {};
-
-  for (const book of mockBooks) {
+  for (const book of filteredBooks.value) { // implicitly uses the updated filteredBooks
     if (!book.isbn) {
       console.warn(`Book with id ${book.id} ('${book.title}') is missing an ISBN and will be skipped.`);
       continue;
     }
-
     if (booksByIsbn[book.isbn]) {
       booksByIsbn[book.isbn].count++;
     } else {
@@ -38,23 +57,27 @@ const uniqueBooksWithCount = computed(() => {
   return Object.values(booksByIsbn);
 });
 
-// Functions for Add Book Modal
+// --- Methods ---
+
 function openAddModal() {
   isAddModalOpen.value = true;
 }
 function closeAddModal() {
   isAddModalOpen.value = false;
 }
+
+// 4. Update handleBookAdded to modify the reactive 'allBooks.value'
 function handleBookAdded(newBook: Book) {
   console.log('New book received:', newBook);
-  mockBooks.push(newBook);
-  closeAddModal();
+  // Push the new book into the reactive ref's array
+  allBooks.value.push(newBook);
+  // Vue detects this change, computed properties update, list re-renders
+  closeAddModal(); // Close modal after adding
 }
 
-// Function to open Details Modal (remains the same)
 function openDetailsModal(book: Book) {
   selectedBook.value = book;
-  isDetailsModalOpen.value = true; // This will trigger the modal via v-model
+  isDetailsModalOpen.value = true;
 }
 
 </script>
@@ -65,8 +88,9 @@ function openDetailsModal(book: Book) {
       <div class="flex-grow max-w-sm mx-auto">
         <IInput
             id="search-bar"
-            placeholder="Search..."
+            placeholder="Search by ISBN, Title, Author, Genre"
             container-class="w-full"
+            v-model="searchQuery"
         />
       </div>
       <div class="mr-9">
@@ -86,8 +110,7 @@ function openDetailsModal(book: Book) {
     <AddBookModal
         v-if="isAddModalOpen"
         @close="closeAddModal"
-        @book-added="handleBookAdded"
-    />
+        @book-added="handleBookAdded" />
 
     <div v-if="uniqueBooksWithCount.length" class="w-full">
       <UCard v-for="item in uniqueBooksWithCount" :key="item.book.isbn" class="px-4 mx-9 my-4 dark:bg-gray-900">
@@ -112,8 +135,8 @@ function openDetailsModal(book: Book) {
               <p>Author: {{ item.book.author }}</p>
               <p>Genre:
                 <span v-for="(genre, index) in item.book.genre" :key="genre">
-                            {{ genre }} <span v-if="index < item.book.genre.length - 1">, </span>
-                            </span>
+                  {{ genre }} <span v-if="index < item.book.genre.length - 1">, </span>
+                </span>
               </p>
               <p>ISBN: {{ item.book.isbn }}</p>
             </div>
@@ -129,7 +152,10 @@ function openDetailsModal(book: Book) {
         </div>
       </UCard>
     </div>
-    <div v-else class="text-center mt-10">No books found.</div>
+    <div v-else class="text-center mt-10 text-gray-500 dark:text-gray-400">
+      <span v-if="searchQuery">No books found matching "{{ searchQuery }}".</span>
+      <span v-else>There are currently no books available.</span>
+    </div>
 
     <BookDetailsModal
         v-model="isDetailsModalOpen"
