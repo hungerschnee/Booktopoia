@@ -69,8 +69,6 @@ function extendBorrowTime(bookId: string) {
   }
 }
 
-// --- Return Book Logic (Adjusted for BorrowedBookEntry) ---
-// --- Return Book Logic (using toast) ---
 function returnBook(bookId: string) {
   console.log(`Attempting to return book with ID: ${bookId}`);
   const entryIndex = borrowedBooks.value.findIndex(entry => entry.book.id === bookId);
@@ -151,13 +149,15 @@ function returnBook(bookId: string) {
                   color="primary"
                   variant="soft" size="sm"
                   @click="extendBorrowTime(entry.book.id)"
+                  icon="i-heroicons-arrow-path-20-solid"
               >
                 Extend (2 Weeks)
               </UButton>
               <UButton
                   color="red"
-                  variant="outline"
+                  variant="soft"
                   size="sm"
+                  icon="i-heroicons-arrow-uturn-right-20-solid"
                   @click="returnBook(entry.book.id)"
               >
                 Return Book

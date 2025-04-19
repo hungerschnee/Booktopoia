@@ -131,6 +131,48 @@ function borrowBook(isbn: string) {
   }
 }
 
+function deleteBook(isbn: string) {
+  // Find book details for a more informative confirmation message
+  const bookDetails = uniqueBooksWithCount.value.find(item => item.book.isbn === isbn);
+  const title = bookDetails?.book.title ?? `Book with ISBN ${isbn}`;
+  const count = bookDetails?.count ?? 'all'; // Get current count if available
+
+  // --- Confirmation Step ---
+  // NOTE: Replacing this with a <UModal> component is recommended for better UX
+  const confirmation = confirm(
+      `Are you sure you want to permanently delete all ${count} copies of "${title}" (ISBN: ${isbn})?\n\nThis action cannot be undone and will remove the book entirely from the available list.`
+  );
+
+  if (confirmation) {
+    console.log(`Deletion confirmed for ISBN: ${isbn}`);
+    const initialCount = allBooks.value.length;
+
+    // Filter the allBooks array, keeping only books that DON'T match the ISBN
+    allBooks.value = allBooks.value.filter(book => book.isbn !== isbn);
+
+    const finalCount = allBooks.value.length;
+    const removedCount = initialCount - finalCount;
+
+    console.log(`Successfully removed ${removedCount} copies.`);
+
+    // Success notification
+    toast.add({
+      id: `delete-success-${isbn}`,
+      title: 'Book Deleted',
+      description: `Successfully deleted ${removedCount} copies of "${title}".`,
+      icon: 'i-heroicons-trash-20-solid',
+      color: 'orange', // Use orange or red
+      timeout: 5000
+    });
+    // The list will update automatically due to reactivity.
+
+  } else {
+    console.log(`Deletion cancelled for ISBN: ${isbn}`);
+    // Optional: Add a cancellation toast
+    // toast.add({ title: 'Deletion Cancelled', description: `"${title}" was not deleted.`, color: 'gray', timeout: 3000 });
+  }
+}
+
 </script>
 
 <template>
@@ -203,6 +245,8 @@ function borrowBook(isbn: string) {
                 class="text-center"
                 v-if="(authorization === 'customer' || authorization === 'librarian') && item.count > 0"
                 @click="borrowBook(item.book.isbn)"
+                variant="soft"
+                icon="i-heroicons-arrow-right-circle-20-solid"
             >
               Borrow Book
             </UButton>
@@ -213,7 +257,16 @@ function borrowBook(isbn: string) {
             >
               Borrow Book
             </UButton>
-            <UButton class="text-center" v-if="authorization === 'librarian'">Delete Book</UButton> </div>
+            <UButton
+                class="w-full text-center"
+                v-if="authorization === 'librarian'"
+                color="red"
+                variant="soft"
+                icon="i-heroicons-trash-20-solid"
+                @click="deleteBook(item.book.isbn)" >
+              Delete Book
+            </UButton>
+          </div>
         </div>
       </UCard>
     </div>
